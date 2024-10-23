@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: monospace;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center; /* Center the container horizontally */
+            align-items: center; /* Center the container vertically */
+        }
+
+        .container {
+            display: flex;
+            width: 80%; /* Set width to 80% of the viewport */
+            height: 90vh; /* Adjust height as needed */
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* History section on the left side */
+        .history-container {
+            width: 20%; /* Set width to 20% for the history */
+            background-color: #f9f9f9;
+            border-right: 1px solid #ccc;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .history-header {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .history-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .history-list li {
+            background-color: #0078D4;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* Chat section on the right side */
+        .chat-container {
+            width: 80%; /* Set width to 80% for the chat */
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            margin-left: 10px;
+        }
+
+        .chat-header {
+    background-color: #0078D4;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.chat-header img {
+    height: 40px;
+    margin-right: 20px;
+}
+
+.chat-header .text-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header h2 {
+    margin: 0;
+}
+
+.chat-header p {
+    margin: 0;
+    font-size: smaller;
+}
+
+
+        .chat-box {
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: scroll;
+            background-color: #fafafa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+        }
+
+        .message.bot .message-content {
+            background-color: #e5e5ea;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .message.user .message-content {
+            background-color: #0078D4;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            text-align: right;
+        }
+
+        .message-input {
+            padding: 20px;
+            background-color: #f9f9f9;
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .message-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #0078D4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .message-input button:hover {
+            background-color: #005a9e;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- History of questions on the left side -->
+        <div class="history-container">
+            <div class="history-header">Question History</div>
+            <ul class="history-list" id="history-list">
+                <!-- Questions will be appended here -->
+            </ul>
+        </div>
+
+        <!-- Chat interface on the right side -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <img src="https://img.freepik.com/premium-photo/3d-model-atom-structure-ai-generated_832240-357.jpg?w=740" alt="Logo">
+                <div class="text-content">
+                    <h2>IDEA Platform</h2>
+                    <p>Integrated Disciplinary Education Assistant</p>
+                </div>
+            </div>
+            
+            
+            <div class="chat-box" id="chat-box">
+                <div class="message bot">
+                    <div class="message-content">
+                        Hi! I am your discussion partner. You can ask me any question on computer science, public health, and geography.
+                    </div>
+                </div>
+            </div>
+            <div class="message-input">
+                <input type="text" id="user-message" placeholder="Type your message here...">
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Typing effect simulation
+        function simulateTyping(text, element) {
+            let i = 0;
+            let typingInterval = setInterval(() => {
+                if (i < text.length) {
+                    element.append(text.charAt(i));
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                }
+            }, 50);
+        }
+
+        // Scroll to the latest message
+        function scrollToBottom() {
+            var chatBox = document.getElementById("chat-box");
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Add question to history list
+        function addToHistory(message) {
+            var historyList = document.getElementById("history-list");
+            var newHistoryItem = document.createElement("li");
+            newHistoryItem.textContent = message;
+            historyList.appendChild(newHistoryItem);
+        }
+
+  
+        $(document).ready(function(){
+        $("#send-btn").click(function(){
+            var message = $("#user-message").val();
+            if(message) {
+                // Append the user's message to the chat box
+                $("#chat-box").append('<div class="message user"><div class="message-content">' + message + '</div></div>');
+                scrollToBottom(); // Scroll to the latest message
+                $("#user-message").val('');  // Clear the input box
+
+                // Add the message to the question history
+                addToHistory(message);
+
+                // Show "Thinking..." message
+                var botTypingElement = $('<div class="message bot typing"><div class="message-content">Thinking...</div></div>');
+                $("#chat-box").append(botTypingElement);
+                scrollToBottom(); // Scroll to the latest message
+
+                // Send the user's message to the server
+                $.ajax({
+                    url: "/send_message",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({"message": message}),
+                    success: function(data) {
+                        setTimeout(function() {
+                            // Remove "Thinking..." message
+                            botTypingElement.remove();
+
+                            // Append a blank message element for the typing effect
+                            var botResponseElement = $('<div class="message bot"><div class="message-content" id="bot-response"></div></div>');
+                            $("#chat-box").append(botResponseElement);
+
+                            // Simulate typing of the bot's response
+                            simulateTyping(data.response, botResponseElement.find("#bot-response"));
+                            scrollToBottom(); // Scroll to the latest message
+
+                            // Display the images from the sources
+                            if (data.sources && data.sources.length > 0) {
+                                data.sources.forEach(function(source) {
+                                    $("#chat-box").append('<img src="' + source + '" alt="Source Image" style="max-width: 100px; margin: 5px;">');
+                                });
+                                scrollToBottom(); // Scroll to the latest message
+                            }
+                        }, 1000);
+                    }
+                });
+            }
+        });
+
+        // Pressing 'Enter' also sends the message
+        $("#user-message").on('keypress', function(e) {
+            if (e.which == 13) {
+                $("#send-btn").click();
+            }
+        });
+    });
+    </script>
+</body>
+</html>

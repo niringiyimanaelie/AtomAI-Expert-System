@@ -1,0 +1,6 @@
+am_text
+am_table
+am_figure
+am_caption
+am_chart
+am_form
