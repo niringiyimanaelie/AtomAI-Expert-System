@@ -12,6 +12,3 @@ The data was extracted from pdf documents processed the leading computer vision 
 
 ### Future work
 We developed this chatbot to keep a record of the user queries and use them for further improving the knowledge base and make the bot more robust and able to answer all questions in the selected subjects. In the future, we can also improve the model to process multiple subjects spanning the education sector. 
-
-### Acknowledgement
-I am so proud of this team and the efforts they put in making my work easier as a Team lead to deliver a functional product. 
